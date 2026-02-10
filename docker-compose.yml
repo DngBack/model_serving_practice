@@ -1,0 +1,28 @@
+# Layout + Table services - chạy riêng biệt
+# Chạy từ project root: cd model_serving_practice && docker compose up -d
+
+services:
+  layout:
+    build:
+      context: .
+      dockerfile: apps/layout/Dockerfile
+    image: layout:dev
+    ports:
+      - "8000:8000"
+    environment:
+      LAYOUT_DEVICE: cpu
+      LAYOUT_NUM_THREADS: 4
+
+  table:
+    build:
+      context: .
+      dockerfile: apps/table/Dockerfile
+    image: table:dev
+    ports:
+      - "8001:8001"
+    environment:
+      TABLE_DEVICE: cpu
+      TABLE_NUM_THREADS: 4
+      TABLE_WEIGHTS_DIR: /app/weights/tableformer
+    volumes:
+      - ./docling-ibm-models/weights/tableformer:/app/weights/tableformer:ro

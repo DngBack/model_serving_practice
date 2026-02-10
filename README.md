@@ -99,15 +99,24 @@
 ```
 .
 ├─ apps/
-│  └─ ocr/
+│  ├─ layout/                    # Layout API (LayoutPredictor)
+│  │  ├─ Dockerfile
+│  │  ├─ src/
+│  │  │  ├─ main.py
+│  │  │  ├─ model_loader.py
+│  │  │  ├─ inference.py
+│  │  │  ├─ schemas.py
+│  │  │  └─ metrics.py
+│  │  └─ requirements.txt
+│  └─ table/                     # Table API (TFPredictor)
 │     ├─ Dockerfile
 │     ├─ src/
-│     │  ├─ main.py              # FastAPI app
-│     │  ├─ model_loader.py       # load OCR model
-│     │  ├─ inference.py          # predict logic
-│     │  ├─ schemas.py            # request/response models
-│     │  └─ metrics.py            # Prometheus metrics
-│     └─ openapi.yaml             # API contract (optional)
+│     │  ├─ main.py
+│     │  ├─ model_loader.py
+│     │  ├─ inference.py
+│     │  ├─ schemas.py
+│     │  └─ metrics.py
+│     └─ requirements.txt
 │
 ├─ infra/
 │  ├─ cluster/
