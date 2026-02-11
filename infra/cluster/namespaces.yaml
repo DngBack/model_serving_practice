@@ -1,0 +1,11 @@
+# Namespaces for OCR / model serving
+# Apply: kubectl apply -f infra/cluster/namespaces.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kserve-system
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ocr-dev

@@ -1,0 +1,52 @@
+# Table InferenceService — custom predictor image
+# Requires table weights (e.g. volume mount or baked into image).
+# Build inside Minikube: eval $(minikube docker-env) && docker build -f apps/table/Dockerfile -t table:dev .
+# Apply: kubectl apply -f infra/kserve/table-isvc.yaml -n ocr-dev
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: table
+  namespace: ocr-dev
+spec:
+  predictor:
+    minReplicas: 1
+    containers:
+      - name: kserve-container
+        image: table:dev
+        imagePullPolicy: Never
+        ports:
+          - containerPort: 8001
+            protocol: TCP
+        env:
+          - name: TABLE_DEVICE
+            value: "cpu"
+          - name: TABLE_NUM_THREADS
+            value: "4"
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+          limits:
+            cpu: "2"
+            memory: "4Gi"
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8001
+          initialDelaySeconds: 90
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8001
+          initialDelaySeconds: 60
+          periodSeconds: 5
+        # Optional: mount weights via PVC (create PVC and add volumeMounts/volumes in a patched manifest)
+        # volumeMounts:
+        #   - name: table-weights
+        #     mountPath: /app/weights/tableformer
+        #     readOnly: true
+    # volumes:
+    #   - name: table-weights
+    #     persistentVolumeClaim:
+    #       claimName: table-weights-pvc

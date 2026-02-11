@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Layout Predict</title>
+</head>
+<body>
+  <h1>Layout OCR – Predict</h1>
+  <p>Chọn ảnh rồi bấm Submit. Đổi <code>BASE_URL</code> trong file nếu cần (NodePort / host).</p>
+  <form id="f" action="" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" accept="image/*" required>
+    <button type="submit">Submit</button>
+  </form>
+  <pre id="out"></pre>
+  <script>
+    var BASE_URL = 'http://layout-ocr-dev.example.com:31799';
+    document.getElementById('f').action = BASE_URL + '/predict';
+    document.getElementById('f').onsubmit = function(e) {
+      e.preventDefault();
+      var fd = new FormData(this);
+      var out = document.getElementById('out');
+      out.textContent = 'Đang gửi...';
+      fetch(BASE_URL + '/predict', { method: 'POST', body: fd })
+        .then(function(r) { return r.json(); })
+        .then(function(d) { out.textContent = JSON.stringify(d, null, 2); })
+        .catch(function(err) { out.textContent = 'Lỗi: ' + err; });
+      return false;
+    };
+  </script>
+</body>
+</html>

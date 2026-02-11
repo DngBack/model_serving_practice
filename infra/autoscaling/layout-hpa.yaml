@@ -1,0 +1,27 @@
+# HPA for Layout InferenceService predictor deployment
+# KServe (Standard mode) creates a Deployment with a generated name (e.g. layout-predictor-default-00001).
+# Use the imperative command so you can pass the exact deployment name:
+#
+#   kubectl get deploy -n ocr-dev
+#   kubectl autoscale deploy <layout-predictor-default-xxxxx> -n ocr-dev --min=1 --max=10 --cpu-percent=70
+#
+# This file is a reference only; replace DEPLOY_NAME when using kubectl apply.
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: layout-hpa
+  namespace: ocr-dev
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: DEPLOY_NAME  # replace with: kubectl get deploy -n ocr-dev
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
